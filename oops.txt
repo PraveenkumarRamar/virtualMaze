@@ -1,0 +1,50 @@
+OOP in JavaScript (Object-oriented Programming)
+
+Encapsulation:
+-Adding the data  into an object is Encapsulation
+
+eg: Person={
+    name:"Praveen",
+    age:23,
+    address:{
+        from:"Salem",
+        state:"Tamilnadu"
+    },
+    interst:["coding","debugging","driving"]
+    isAlive:True
+}
+
+Creating a function into an object is called method
+eg:
+person{
+    name:"Praveen",
+    age:23,
+
+    greeting(){
+        This is method
+    }
+}
+
+
+Factory function(camelCase myFirstName)
+--Creating
+
+Constructor (PascalCase : MyFirstName)
+Constructing a things
+
+new = new is a keyword it creating an empty object
+this keyword = the key means an empty object
+1.Calling this keyword in method refers to an Object
+
+2.Calling this keyword in a function refers to global 
+in browser it refers to the window, nodeJs it refers to global
+
+Dynamic Objects
+
+let Person = {
+    name:"Praveen"
+}
+Person.age = 22
+Person.greeting = function(){}
+
+delete Person.name
