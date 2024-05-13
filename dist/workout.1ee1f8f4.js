@@ -161,8 +161,9 @@ var Table = /*#__PURE__*/function () {
         th.innerText = data.label ? data.label : "-";
         tr.append(th);
       });
-      console.log(this.data);
-      console.log(this.fetching_data);
+
+      // console.log(this.data);
+      // console.log(this.fetching_data);
       thead.append(tr);
       // console.log(thead);
       return thead;
@@ -269,12 +270,11 @@ var Table = /*#__PURE__*/function () {
         tbody.appendChild(tr);
       });
       var id = this.fetching_data.length;
-      console.log(id);
+      // console.log(id);
 
       // Add a new row for adding data
       var newRow = document.createElement("tr");
       newRow.setAttribute("id", "row".concat(id));
-      // newRow.style.display = "none"
       this.data.forEach(function (item) {
         var td = document.createElement("td");
         td.style.textAlign = "center";
@@ -309,13 +309,18 @@ var Table = /*#__PURE__*/function () {
       // //     console.log(d.innerHTML);
       // // }
 
-      var newRow = document.getElementById("row".concat(id));
+      var addRowBtn = document.getElementById("row".concat(id));
+      console.log(addRowBtn);
+
+      // addRowBtn.style.display = "block"
       var inputElements = document.querySelectorAll(".text_data".concat(id));
       var newData = {};
-      console.log(inputElements, 'inputElements');
+
+      // console.log(inputElements, 'inputElements');
+
       inputElements.forEach(function (input, index) {
         var keyId = _this2.data[index].keyId;
-        console.log(keyId, 'keyy');
+        // console.log(keyId, 'keyy');
         newData[keyId] = input.value;
       });
       this.fetching_data.push(newData);
@@ -334,17 +339,18 @@ var Table = /*#__PURE__*/function () {
       // console.log(data);
       // // return data
     }
+
     // addDataButton() {
+
+    //     let id = this.fetching_data.length
+
     //     let addBtn = document.createElement("button")
     //     addBtn.innerHTML = "Add";
     //     addBtn.style.textAlign = "center"
-
-    //     let addRowBtn = document.getElementById("newRow")
-    //     console.log(addRowBtn);
-    //     // addRowBtn.style.display = "inline"
+    //     addBtn.addEventListener("click",()=>this.addData())
+    //     // console.log(addRowBtn);
     //     // addBtn.style.display = "none"
 
-    //     addBtn.addEventListener("click", () => this.addData())
     //     return addBtn
     // }
   }, {
@@ -398,7 +404,12 @@ var Table = /*#__PURE__*/function () {
       var appBody = document.getElementById("app");
       appBody.innerHTML = ''; // Clear previous content
       appBody.append(table); // Append the table
-      console.log(table);
+      // console.log(table);
+
+      // let add_btn =  this.addDataButton() 
+
+      // appBody.append(add_btn)
+
       var add_btn_event = document.querySelector('.row-action-btn');
       add_btn_event === null || add_btn_event === void 0 || add_btn_event.addEventListener('click', function () {
         _this4.addData(add_btn_event.id);

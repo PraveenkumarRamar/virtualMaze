@@ -36,8 +36,8 @@ class Table {
             tr.append(th)
         })
 
-        console.log(this.data);
-        console.log(this.fetching_data);
+        // console.log(this.data);
+        // console.log(this.fetching_data);
         thead.append(tr)
         // console.log(thead);
         return thead
@@ -150,16 +150,15 @@ class Table {
         });
 
         let id = this.fetching_data.length
-        console.log(id);
-        
+        // console.log(id);
+
         // Add a new row for adding data
         let newRow = document.createElement("tr");
-        newRow.setAttribute("id",`row${id}`);
-        // newRow.style.display = "none"
+        newRow.setAttribute("id", `row${id}`);
         this.data.forEach((item) => {
             let td = document.createElement("td");
             td.style.textAlign = "center";
-            td.setAttribute("class",`data${id}`)
+            td.setAttribute("class", `data${id}`)
 
             if (item.keyId !== "action") {
                 let input = document.createElement("input");
@@ -174,7 +173,7 @@ class Table {
                 addButton.classList.add('row-action-btn')
                 addButton.innerText = "Add";
                 td.appendChild(addButton);
-                
+
                 newRow.appendChild(td);
             }
         });
@@ -195,15 +194,18 @@ class Table {
         // // }
 
 
-        let newRow = document.getElementById(`row${id}`);
+        let addRowBtn = document.getElementById(`row${id}`)
+        console.log(addRowBtn);
+
+        // addRowBtn.style.display = "block"
         let inputElements = document.querySelectorAll(`.text_data${id}`);
         let newData = {};
 
-       console.log(inputElements, 'inputElements');
+        // console.log(inputElements, 'inputElements');
 
         inputElements.forEach((input, index) => {
             let keyId = this.data[index].keyId;
-            console.log(keyId, 'keyy');
+            // console.log(keyId, 'keyy');
             newData[keyId] = input.value;
         });
 
@@ -224,19 +226,21 @@ class Table {
         // console.log(data);
         // // return data
     }
+
     // addDataButton() {
+
+    //     let id = this.fetching_data.length
+
     //     let addBtn = document.createElement("button")
     //     addBtn.innerHTML = "Add";
     //     addBtn.style.textAlign = "center"
-
-    //     let addRowBtn = document.getElementById("newRow")
-    //     console.log(addRowBtn);
-    //     // addRowBtn.style.display = "inline"
+    //     addBtn.addEventListener("click",()=>this.addData())
+    //     // console.log(addRowBtn);
     //     // addBtn.style.display = "none"
 
-    //     addBtn.addEventListener("click", () => this.addData())
     //     return addBtn
     // }
+
     getActionButton(actions, id) {
         let buttonContainer = document.createElement("div"); // Create a container for buttons
         buttonContainer.style.display = "flex"; // Align buttons horizontally
@@ -280,10 +284,15 @@ class Table {
         let appBody = document.getElementById("app");
         appBody.innerHTML = ''; // Clear previous content
         appBody.append(table); // Append the table
-        console.log(table);
+        // console.log(table);
+
+        // let add_btn =  this.addDataButton() 
+
+        // appBody.append(add_btn)
+
 
         let add_btn_event = document.querySelector('.row-action-btn')
-        add_btn_event?.addEventListener('click', ()=>{
+        add_btn_event?.addEventListener('click', () => {
 
             this.addData(add_btn_event.id)
         })
