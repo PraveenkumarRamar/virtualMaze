@@ -35,26 +35,9 @@ class Table {
             th.innerText = data.label ? data.label : "-";
             tr.append(th)
         })
-        // Object.keys(this.fetching_data[index]).forEach((key)=>{
-        //     console.log(key);
-        // })
-        // this.data.map((datas, index) => {
-        //     // if (data.label === undefined) {
-        //     //     // d
-        //     //     return data.label = "-";
-        //     // }
-        //     console.log(this.data[index]);
-        //     // if(this.data[index].keyId == Object.keys(this.fetching_data[index])){
-        //     //     console.log(this.data[index].keyId);
-        //     // }
 
-
-
-        //     // let th = document.createElement("th");
-        //     // th.setAttribute("id", `headerId${index}`)
-        //     // th.innerHTML = data.label
-        // })
-
+        console.log(this.data);
+        console.log(this.fetching_data);
         thead.append(tr)
         // console.log(thead);
         return thead
@@ -112,6 +95,35 @@ class Table {
     // }
 
 
+    // getData() {
+    //     let tbody = document.createElement('tbody');
+
+    //     this.fetching_data.forEach((data, index) => {
+    //         let tr = document.createElement("tr");
+    //         tr.setAttribute("id", `row${index}`);
+
+    //         this.data.forEach((item) => {
+    //             let td = document.createElement("td");
+    //             td.style.textAlign = "center";
+    //             td.setAttribute("class", `data${index}`);
+
+    //             if (item.keyId !== "action") {
+    //                 td.innerText = data[item.keyId] !== undefined ? data[item.keyId] : "-";
+    //                 tr.append(td);
+    //             } else {
+    //                 let buttonsCell = document.createElement("td");
+    //                 buttonsCell.appendChild(this.getActionButton(item.action, index)); // Pass data.id as row ID
+    //                 tr.appendChild(buttonsCell);
+    //             }
+    //         });
+
+    //         tbody.appendChild(tr);
+    //     });
+
+    //     return tbody;
+    // }
+
+
     getData() {
         let tbody = document.createElement('tbody');
 
@@ -137,9 +149,94 @@ class Table {
             tbody.appendChild(tr);
         });
 
+        let id = this.fetching_data.length
+        console.log(id);
+        
+        // Add a new row for adding data
+        let newRow = document.createElement("tr");
+        newRow.setAttribute("id",`row${id}`);
+        // newRow.style.display = "none"
+        this.data.forEach((item) => {
+            let td = document.createElement("td");
+            td.style.textAlign = "center";
+            td.setAttribute("class",`data${id}`)
+
+            if (item.keyId !== "action") {
+                let input = document.createElement("input");
+                input.setAttribute("type", "text");
+                input.setAttribute("class", `text_data${id}`);
+                input.setAttribute("placeholder", item.label);
+                td.appendChild(input);
+                newRow.appendChild(td);
+            } else {
+                let addButton = document.createElement("button");
+                addButton.id = id
+                addButton.classList.add('row-action-btn')
+                addButton.innerText = "Add";
+                td.appendChild(addButton);
+                
+                newRow.appendChild(td);
+            }
+        });
+        id++;
+
+        tbody.appendChild(newRow);
+
         return tbody;
     }
 
+
+
+    addData(id) {
+        // let data =  document.querySelectorAll(".data0")
+        // // for(let d of data){
+        // //     i++
+        // //     console.log(d.innerHTML);
+        // // }
+
+
+        let newRow = document.getElementById(`row${id}`);
+        let inputElements = document.querySelectorAll(`.text_data${id}`);
+        let newData = {};
+
+       console.log(inputElements, 'inputElements');
+
+        inputElements.forEach((input, index) => {
+            let keyId = this.data[index].keyId;
+            console.log(keyId, 'keyy');
+            newData[keyId] = input.value;
+        });
+
+        this.fetching_data.push(newData);
+        this.tableStructure();
+
+
+        // const title = prompt("Enter title:");
+        // const description = prompt("Enter description:");
+        // if ((title.length || description.length) < 0) {
+        //     alert('Fields cannot be empty')
+        //     return
+        // } else {
+        //     this.fetching_data.push({ title: title, description: description });
+        // }
+        // this.tableStructure();
+
+        // console.log(data);
+        // // return data
+    }
+    // addDataButton() {
+    //     let addBtn = document.createElement("button")
+    //     addBtn.innerHTML = "Add";
+    //     addBtn.style.textAlign = "center"
+
+    //     let addRowBtn = document.getElementById("newRow")
+    //     console.log(addRowBtn);
+    //     // addRowBtn.style.display = "inline"
+    //     // addBtn.style.display = "none"
+
+    //     addBtn.addEventListener("click", () => this.addData())
+    //     return addBtn
+    // }
     getActionButton(actions, id) {
         let buttonContainer = document.createElement("div"); // Create a container for buttons
         buttonContainer.style.display = "flex"; // Align buttons horizontally
@@ -182,21 +279,31 @@ class Table {
         // console.log(table);
         let appBody = document.getElementById("app");
         appBody.innerHTML = ''; // Clear previous content
-        appBody.append(table, this.addDataButton()); // Append the table
+        appBody.append(table); // Append the table
         console.log(table);
+
+        let add_btn_event = document.querySelector('.row-action-btn')
+        add_btn_event?.addEventListener('click', ()=>{
+
+            this.addData(add_btn_event.id)
+        })
     }
 
     editData(id) {
         // console.log(`Data edited successfully in  ${id}`);
         let data = document.querySelectorAll(`.data${id}`)
+        console.log(data.length);
 
-        let fContainer = this.formContainer || this.formData()
-        let form = fContainer.querySelector('.form-container')
-        // console.log(form);
-        form.innerHTML = ''
-        fContainer.style.display = "block";
-        this.formContainer = fContainer
+        // let fContainer = this.formContainer || this.formData()
+        // let form = fContainer.querySelector('.form-container')
+        // // console.log(form);
+        // form.innerHTML = ''
+        // fContainer.style.display = "block";
+        // this.formContainer = fContainer
 
+        for (let i = 0; i < data.length; i++) {
+            data[i].innerHTML = `<input type='text' id='text_data${id}' value='${data[i].innerHTML}'/>`
+        }
 
         let editBtn = document.querySelector(`#Edit_${id}`)
         editBtn.style.display = "none"
@@ -207,14 +314,16 @@ class Table {
         saveBtn.style.display = "inline"
 
 
-        for (let datas of data) {
-            // console.log(typeof datas.innerHTML);
-            let inputs = datas.innerHTML
-            form.innerHTML += `<input type='text' id='text_data${id}' value='${inputs}'/><br><br>`;
-            // inputs.setAttribute("type" , "text")
-        }
-        let ele = document.getElementById("app")
-        ele.append(fContainer)
+
+
+        // for (let datas of data) {
+        //     // console.log(typeof datas.innerHTML);
+        //     let inputs = datas.innerHTML
+        //     form.innerHTML += `<input type='text' id='text_data${id}' value='${inputs}'/><br><br>`;
+        //     // inputs.setAttribute("type" , "text")
+        // }
+        // let ele = document.getElementById("app")
+        // ele.append(fContainer)
         // document.body.appendChild(fContainer)
     }
 
@@ -230,11 +339,20 @@ class Table {
         let input_data = document.querySelectorAll(`#text_data${id}`);
         let table_data = document.querySelectorAll(`.data${id}`);
 
+
+        let newData = {};
+
         // Assuming input_data and table_data have the same length
         input_data.forEach((input, index) => {
+            let keyId = this.data[index].keyId;
+            // console.log(keyId, 'keyy');
+            newData[keyId] = input.value;
             table_data[index].innerHTML = input.value;
         });
-        this.closeForm(id)
+        // this.tableStructure();
+        this.fetching_data.push(newData);
+
+        // this.closeForm(id)
     }
 
 
@@ -248,49 +366,22 @@ class Table {
         return div
     }
 
-    addData() {
-        // let data =  document.querySelectorAll(".data0")
-        // // for(let d of data){
-        // //     i++
-        // //     console.log(d.innerHTML);
-        // // }
 
 
-        const title = prompt("Enter title:");
-        const description = prompt("Enter description:");
-        if ((title.length || description.length) < 0) {
-            alert('Fields cannot be empty')
-            return
-        } else {
-            this.fetching_data.push({ title: title, description: description });
-        }
-        this.tableStructure();
+    // closeForm(id) {
 
-        // console.log(data);
-        // // return data
-    }
-    addDataButton() {
-        let addBtn = document.createElement("button")
-        addBtn.innerHTML = "Add";
-        addBtn.style.textAlign = "center"
-        addBtn.addEventListener("click", () => this.addData())
-        return addBtn
-    }
+    //     let editBtn = document.querySelector(`#Edit_${id}`)
+    //     editBtn.style.display = "inline"
 
-    closeForm(id) {
+    //     // console.log(editBtn);
 
-        let editBtn = document.querySelector(`#Edit_${id}`)
-        editBtn.style.display = "inline"
+    //     let saveBtn = document.querySelector(`#Save_${id}`)
+    //     saveBtn.style.display = "none"
 
-        // console.log(editBtn);
+    //     // let form = document.querySelector(".forms-section")
+    //     this.formContainer.style.display = "none";
 
-        let saveBtn = document.querySelector(`#Save_${id}`)
-        saveBtn.style.display = "none"
-
-        // let form = document.querySelector(".forms-section")
-        this.formContainer.style.display = "none";
-
-    }
+    // }
 }
 
 
@@ -337,37 +428,37 @@ let deploy = new Table([
 
     }
 ],
-[
-    {
-        id: "1",
-        title: "title 1",
-        description: "Direct",
-        reason: "nothing",
-        date: 122001
-    },
-    {
-        id: "2",
-        title: "title 2",
-        description: "Legacy",
-        reason: "no reason",
-        date: 123002
-    },
-    {
-        id: "3",
-        title: "title 3",
-        description: "Direct",
-        reason: "only reason",
-        date: 125001
-    },
-    {
-        id: "3",
-        title: "title 3",
-        description: "Direct",
-        reason: "yes yes",
-        date: 112001
-    }
+    [
+        {
+            id: "1",
+            title: "title 1",
+            description: "Direct",
+            reason: "nothing",
+            date: 122001
+        },
+        {
+            id: "2",
+            title: "title 2",
+            description: "Legacy",
+            reason: "no reason",
+            date: 123002
+        },
+        {
+            id: "3",
+            title: "title 3",
+            description: "Direct",
+            reason: "only reason",
+            date: 125001
+        },
+        {
+            id: "3",
+            title: "title 3",
+            description: "Direct",
+            reason: "yes yes",
+            date: 112001
+        }
 
-])
+    ])
 
 // deploy.getData()
 // deploy.tableStructure();
