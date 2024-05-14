@@ -1,3 +1,26 @@
+
+
+const formatMilliseconds = (milliseconds) => {
+
+    milliseconds = parseFloat(milliseconds || 0)
+
+    // Create a new Date object using the milliseconds
+    let date = new Date(milliseconds);
+
+    // Get the components of the date and time
+    let day = date.getDate().toString().padStart(2, '0'); // Get day and pad with zero if needed
+    let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based, so add 1 and pad with zero
+    let year = date.getFullYear().toString(); // Get full year
+    let hours = date.getHours().toString().padStart(2, '0'); // Get hours and pad with zero
+    let minutes = date.getMinutes().toString().padStart(2, '0'); // Get minutes and pad with zero
+
+    // Construct the formatted date and time string
+    let formattedDateTime = `${day}/${month}/${year}, ${hours}:${minutes}`;
+
+    return formattedDateTime;
+
+}
+
 class Table {
     constructor(
         data = [],
@@ -111,86 +134,33 @@ class Table {
     getData() {
         let tbody = document.createElement('tbody');
 
+        tbody.id = 'content-table-body'
+
         this.fetching_data.forEach((data, index) => {
             let tr = document.createElement("tr");
             tr.setAttribute("id", `row${index}`);
+            // console.log(data);
 
             this.data.forEach((item) => {
+
                 let td = document.createElement("td");
                 td.style.textAlign = "center";
                 td.setAttribute("class", `data${index}`);
 
+
                 if (item.keyId !== "action") {
-                    // td.innerText = data[item.keyId] !== undefined ? data[item.keyId] : "-";
+                    td.innerText = data[item.keyId] !== undefined ? data[item.keyId] : "-";
+
                     if (data[item.keyId] !== undefined) {
-                        if (item.type == "checkbox") {
-                            // console.log(data[item.keyId]);
-                            let len = data[item.keyId].length;
-                            for (let i = 0; i < len; i++) {
-                                // if()
-                                // console.log(data[item.keyId][i]);
-                                let input = document.createElement("input");
-                                input.setAttribute("type", item.type);
-                                input.classList.add(`input_select_data${index}`)
-                                input.setAttribute("name", data[item.keyId][i].status);
-                                input.setAttribute("value", data[item.keyId][i].status);
-                                input.checked = data[item.keyId][i].isSelected ? true : false;
-                                // input.style.display = data[item.keyId][i].isSelected ? "inline" : "none"
-                                td.appendChild(input);
-                                let label = document.createElement("label");
-                                label.innerText = data[item.keyId][i].status;
-                                // label.style.display = data[item.keyId][i].isSelected ? "inline" : "none"
-                                td.appendChild(label);
-                            }
+                        if (item.type == "number") {
+                            let number = data[item.keyId]
 
-
-                            // td.innerHTML = `  
-                            // <input type="${item.type}" ${data.isChecked ? "checked" : ""} class="text_data${index}" id="text-input-data${index}" name="${data[item.keyId]}"  value="${data[item.keyId]}">
-                            // <label for="text-input-data${index}">${data[item.keyId]}</label>`
-                        } 
-                        
-                        else if (item.type == "radio") {
-                            let len = data[item.keyId].length;
-                            for (let i = 0; i < len; i++) {
-                                // if()
-                                // console.log(data[item.keyId][i]);
-                                let input = document.createElement("input");
-                                input.setAttribute("type", item.type);
-                                input.classList.add(`input_radio_data${index}`)
-                                input.setAttribute("name", `data${index}`);
-                                input.setAttribute("value", data[item.keyId][i].gender);
-                                input.checked = data[item.keyId][i].isChecked ? true : false;
-                                // console.log(data[item.keyId][i].isChecked);
-                                // input.style.display = data[item.keyId].isChecked ? "inline" : "none"
-                                td.appendChild(input);
-                                let label = document.createElement("label");
-                                label.innerText = data[item.keyId][i].gender;
-                                // label.style.display = data[item.keyId][i].isChecked ? "inline" : "none"
-                                td.appendChild(label);
-                            }
-                        } else if (item.type == "select") {
-
-                            let selectElement = document.createElement("select");
-                            selectElement.setAttribute("name", "table");
-                            selectElement.classList.add(`select_data${index}`)
-                            selectElement.setAttribute("id", "table-select-element");
-                            td.appendChild(selectElement)
-
-                            let len = data.selectValue.length
-                            // console.log(len);
-                            for (let i = 0; i < len; i++) {
-                                let option = document.createElement("option");
-                                option.setAttribute("value", data.selectValue[i]);
-                                option.innerText = data.selectValue[i]
-                                selectElement.appendChild(option);
-                            }
-                        }
-                        else {
-                            td.innerHTML = data[item.keyId]
+                            td.innerHTML = item.format ? item.format(number) : number
                         }
                     } else {
-                        td.innerHTML = '-'
+                        td.innerHTML = 'notAvailable';
                     }
+
                     tr.append(td);
                 } else {
                     let buttonsCell = document.createElement("td");
@@ -206,33 +176,33 @@ class Table {
         // console.log(id);
 
         // Add a new row for adding data
-        let newRow = document.createElement("tr");
-        newRow.setAttribute("id", `row${id}`);
-        this.data.forEach((item) => {
-            let td = document.createElement("td");
-            td.style.textAlign = "center";
-            td.setAttribute("class", `data${id}`)
+        // let newRow = document.createElement("tr");
+        // newRow.setAttribute("id", `row${id}`);
+        // this.data.forEach((item) => {
+        //     let td = document.createElement("td");
+        //     td.style.textAlign = "center";
+        //     td.setAttribute("class", `data${id}`)
 
-            if (item.keyId !== "action") {
-                let input = document.createElement("input");
-                input.setAttribute("type", "text");
-                input.setAttribute("class", `text_data${id}`);
-                input.setAttribute("placeholder", item.label);
-                td.appendChild(input);
-                newRow.appendChild(td);
-            } else {
-                let addButton = document.createElement("button");
-                addButton.id = id
-                addButton.classList.add('row-action-btn')
-                addButton.innerText = "Add";
-                td.appendChild(addButton);
+        //     if (item.keyId !== "action") {
+        //         let input = document.createElement("input");
+        //         input.setAttribute("type", "text");
+        //         input.setAttribute("class", `text_data${id}`);
+        //         input.setAttribute("placeholder", item.label);
+        //         td.appendChild(input);
+        //         newRow.appendChild(td);
+        //     } else {
+        //         let addButton = document.createElement("button");
+        //         addButton.id = id
+        //         addButton.classList.add('row-action-btn')
+        //         addButton.innerText = "Add";
+        //         td.appendChild(addButton);
 
-                newRow.appendChild(td);
-            }
-        });
-        id++;
+        //         newRow.appendChild(td);
+        //     }
+        // });
+        // id++;
 
-        tbody.appendChild(newRow);
+        // tbody.appendChild(newRow);
 
         return tbody;
     }
@@ -240,17 +210,9 @@ class Table {
 
 
     addData(id) {
-        // let data =  document.querySelectorAll(".data0")
-        // // for(let d of data){
-        // //     i++
-        // //     console.log(d.innerHTML);
-        // // }
 
+        console.log(id, 'sadasd');
 
-        // let addRowBtn = document.getElementById(`row${id}`)
-        // console.log(addRowBtn);
-
-        // addRowBtn.style.display = "block"
         let inputElements = document.querySelectorAll(`.text_data${id}`);
         console.log(inputElements);
         let newData = {};
@@ -261,18 +223,13 @@ class Table {
             let keyId = this.data[index].keyId;
             // console.log(keyId, 'keyy');
             newData[keyId] = input.value;
-            console.log(input.value);
+            // console.log(input.value);
         });
 
         this.fetching_data.push(newData);
         this.tableStructure();
 
 
-        // const title = prompt("Enter title:");
-        // const description = prompt("Enter description:");
-        // if ((title.length || description.length) < 0) {
-        //     alert('Fields cannot be empty')
-        //     return
         // } else {
         //     this.fetching_data.push({ title: title, description: description });
         // }
@@ -282,19 +239,6 @@ class Table {
         // // return data
     }
 
-    // addDataButton() {
-
-    //     let id = this.fetching_data.length
-
-    //     let addBtn = document.createElement("button")
-    //     addBtn.innerHTML = "Add";
-    //     addBtn.style.textAlign = "center"
-    //     addBtn.addEventListener("click",()=>this.addData())
-    //     // console.log(addRowBtn);
-    //     // addBtn.style.display = "none"
-
-    //     return addBtn
-    // }
 
     getActionButton(actions, id) {
         let buttonContainer = document.createElement("div"); // Create a container for buttons
@@ -338,7 +282,11 @@ class Table {
         // console.log(table);
         let appBody = document.getElementById("app");
         appBody.innerHTML = ''; // Clear previous content
+        
         appBody.append(table); // Append the table
+        
+        let addButton = this.addDataButton()
+        appBody.appendChild(addButton); // Append the table
         // console.log(table);
 
         // let add_btn =  this.addDataButton() 
@@ -346,38 +294,104 @@ class Table {
         // appBody.append(add_btn)
 
 
-        let add_btn_event = document.querySelector('.row-action-btn')
-        add_btn_event?.addEventListener('click', () => {
-
-            this.addData(add_btn_event.id)
-        })
+       
+       
     }
 
     editData(id) {
 
         let data = document.querySelector(`#row${id}`)
+        // console.log(id);
+
         let td_cells = data.querySelectorAll(`.data${id}`)
-        // console.log(td_cells);
+        // console.log(td_cells.length);
+
+        let keyData = this.data;
+        // let f_dataKeys = Object.keys(this.fetching_data[id]);
+        // console.log(f_dataKeys);
+        let f_data = this.fetching_data[id]
+
 
         for (let i = 0; i < td_cells.length; i++) {
 
+            if (keyData[i].type == "select") {
+                // console.log(keyData[i]);
+                let selectElement = document.createElement("select");
+                selectElement.setAttribute("name", "table");
+                selectElement.classList.add(`select_data${id}`)
+                selectElement.setAttribute("id", "table-select-element");
+                td_cells[i].innerHTML = ""
+                td_cells[i].append(selectElement)
+
+
+                let selectDataLength = keyData[i].option.length
+                // console.log(selectDataLength);
+
+                for (let j = 0; j < selectDataLength; j++) {
+
+                    // console.log( f_data.title[i].selectTitle);
+                    let option = document.createElement("option");
+                    option.setAttribute("value", keyData[i].option[j]);
+                    option.innerText = keyData[i].option[j]
+                    selectElement.appendChild(option);
+                }
+            }
+
+
+
+            else if (keyData[i].type == "radio") {
+                let radioOptions = keyData[i].option
+                // console.log(radioOptions);
+
+                let radioContainer = document.createElement("div"); // Container for radio inputs and labels
+                for (let j = 0; j < radioOptions.length; j++) {
+                    let input = document.createElement("input");
+                    input.setAttribute("type", keyData[i].type);
+                    input.setAttribute("name", `radio_data${id}`); // Unique name for radio group
+                    input.setAttribute("value", radioOptions[j]);
+                    input.checked = f_data.gender == radioOptions[j] ? true : false;
+                    let label = document.createElement("label");
+                    label.innerText = radioOptions[j];
+
+                    radioContainer.appendChild(input);
+                    radioContainer.appendChild(label);
+                    // }
+                    td_cells[i].innerHTML = ""; // Clear cell content
+                    td_cells[i].appendChild(radioContainer);
+                }
+            }
+
+            else if (keyData[i].type == "text") {
+                // console.log(keyData[i], td_cells[i].innerHTML);
+                let input = document.createElement("input");
+                input.setAttribute("type", keyData[i].type);
+                input.classList.add(`input_data${id}`)
+                input.setAttribute("name", `text_${id}`); // Unique name for radio group
+                input.setAttribute("value", f_data[keyData[i].keyId]);
+                td_cells[i].innerHTML = input.outerHTML
+            }
+
+            else if (keyData[i].type == "number") {
+                let numberInput = document.createElement('input')
+                let number = f_data[keyData[i].keyId]
+                numberInput.classList.add(`input_data${id}`)
+                numberInput.setAttribute('type', keyData[i].type);
+                numberInput.setAttribute("value", number)
+                td_cells[i].innerText = ""
+                td_cells[i].appendChild(numberInput)
+            }
+
+            let editBtn = document.querySelector(`#Edit_${id}`)
+            editBtn.style.display = "none"
+
+            // console.log(editBtn);
+
+            let saveBtn = document.querySelector(`#Save_${id}`)
+            saveBtn.style.display = "inline"
+            // saveBtn.addEventListener("click", () => this.saveData(id))
+
 
         }
-
-
-        // for (let i = 0; i < data.length; i++) {
-        //     data[i].innerHTML = `<input type='text' id='text_data${id}' value='${data[i].innerHTML}'/>`
-        // }
-
-        let editBtn = document.querySelector(`#Edit_${id}`)
-        editBtn.style.display = "none"
-
-        // console.log(editBtn);
-
-        let saveBtn = document.querySelector(`#Save_${id}`)
-        saveBtn.style.display = "inline"
-
-
     }
 
     deleteData(id) {
@@ -389,25 +403,54 @@ class Table {
     }
 
     saveData(id) {
-        let input_data = document.querySelectorAll(`#text_data${id}`);
-        let table_data = document.querySelectorAll(`.data${id}`);
+        let dataRow = document.querySelector(`#row${id}`)
+        let td_cells = dataRow.querySelectorAll(`.data${id}`)
+        // console.log(td_cells);
+        // let input_data = document.querySelectorAll(`#text_data${id})
 
-
+        let keyData = this.data;
+        let f_data = this.fetching_data[id]
         let newData = {};
 
-        // Assuming input_data and table_data have the same length
-        input_data.forEach((input, index) => {
-            let keyId = this.data[index].keyId;
-            // console.log(keyId, 'keyy');
-            newData[keyId] = input.value;
-            table_data[index].innerHTML = input.value;
-        });
+        for (let i = 0; i < td_cells.length; i++) {
+            if (keyData[i].type == "radio") {
+                let radios = document.getElementsByName(`radio_data${id}`);
+                // console.log(id);
+                // console.log(radios);
+
+                for (let data of radios) {
+                    if (data.checked) td_cells[i].innerHTML = data.value;
+                    // data.checked?console.log("checked",data.value):console.log("no",data.value);
+                }
+            }
+            else if (keyData[i].type == "select") {
+                let data = td_cells[i].querySelector(`.select_data${id}`)
+                // console.log(data.value);
+                // for (let selected of data) {
+                let value = data.value
+                td_cells[i].innerHTML = value
+                // }
+            }
+            else if ((keyData[i].type == "number") || (keyData[i].type == "text")) {
+                let data = td_cells[i].querySelector(`.input_data${id}`).value
+
+                td_cells[i].innerHTML = keyData[i].format ? keyData[i].format(data) : data
+
+            }
+        }
+
+        let editBtn = document.querySelector(`#Edit_${id}`)
+        editBtn.style.display = "inline"
+
+        // console.log(editBtn);
+
+        let saveBtn = document.querySelector(`#Save_${id}`)
+        saveBtn.style.display = "none"
+
         // this.tableStructure();
-        this.fetching_data.push(newData);
+        // this.fetching_data.push(newData);
 
-        // this.closeForm(id)
     }
-
 
     formData() {
         let div = document.createElement("div")
@@ -420,154 +463,141 @@ class Table {
     }
 
 
+    addAddingRow(){
 
-    // closeForm(id) {
+        let parentContainer = document.querySelector('#content-table-body')
 
-    //     let editBtn = document.querySelector(`#Edit_${id}`)
-    //     editBtn.style.display = "inline"
+        let id = this.fetching_data.length
 
-    //     // console.log(editBtn);
+        let newRow = document.createElement("tr");
+        newRow.setAttribute("id", `row${id}`);
 
-    //     let saveBtn = document.querySelector(`#Save_${id}`)
-    //     saveBtn.style.display = "none"
+        this.data.forEach((item) => {
+            let td = document.createElement("td");
+            td.style.textAlign = "center";
+            td.setAttribute("class", `data${id}`)
 
-    //     // let form = document.querySelector(".forms-section")
-    //     this.formContainer.style.display = "none";
+            if (item.keyId !== "action") {
+                let input = document.createElement("input");
+                input.setAttribute("type", "text");
+                input.setAttribute("class", `text_data${id}`);
+                input.setAttribute("placeholder", item.label);
+                td.appendChild(input);
+                newRow.appendChild(td);
+            } else {
+                let addButton = document.createElement("button");
+                addButton.id = id
+                addButton.classList.add('row-action-btn')
+                addButton.innerText = "Add";
+                td.appendChild(addButton);
 
-    // }
+                newRow.appendChild(td);
+            }
+        });
+        id++;        
+    
+        parentContainer.appendChild(newRow);
+
+        let main_add_btn = document.querySelector('#addButton')
+        let add_btn_event = newRow.querySelector('.row-action-btn')
+        add_btn_event?.addEventListener('click', () => {
+
+
+            this.addData(add_btn_event.id)
+
+            add_btn_event.parentElement.parentElement.remove()
+            main_add_btn.style.display='flex'
+        })
+
+    }
+
+    addDataButton() {
+
+        let id = this.fetching_data.length
+
+        let addBtn = document.createElement("button")
+        addBtn.innerHTML = "Add";
+        addBtn.style.textAlign = "center"
+        
+        addBtn.setAttribute("id", "addButton")
+        
+        addBtn.addEventListener("click", () => {
+            this.addAddingRow()
+            addBtn.style.display = 'none'
+        })
+        
+        return addBtn
+    }
 }
 
 
 
 let deploy = new Table([
     {
-        keyId: "title",
-        label: "Title",
-        type: "select",
-        // formate() {
+        keyId: "name",
+        label: "Name",
+        type: "text",
+        format(value) {
 
-        // }
+            return value || 'N/A'
+
+        }
     },
     {
-        keyId: "status",
-        label: "Status",
-        type: "checkbox",
-        // formate() {
-
-        // }
-    }
-    , {
         keyId: "gender",
         label: "Gender",
         type: "radio",
-
-        // action: ["Edit", "Delete", "Save"]
-
-        // formate() {
-
-        // }
+        option: ["male", "female", "trans"]
+    }
+    , {
+        keyId: "department",
+        label: "Department",
+        type: "select",
+        option: ["IT", "Software", "Mech"]
     }, {
+        keyId: "designation",
+        label: "Designation",
+        type: "select",
+        option: ["Manager", "developer",]
+    },
+    {
         keyId: "date",
         label: "Date",
-        type: "number"
-        // action: ["Edit", "Delete", "Save"]
-        // formate() {
+        type: "number",
+        format: (value) => {
 
-        // }
+            return formatMilliseconds(value)
+
+        }
     },
     {
         keyId: "action",
         label: "Action",
         action: ["Edit", "Delete", "Save"]
-
-        // formate() {
-
-        // }
-
     }
 ],
     [
         {
-            title: "title 1",
-            selectValue: ["Title-1", "Heading-1"],
-            status: [{
-                status: true,
-                isSelected: false
-            }, {
-                status: false,
-                isSelected: true
-            }],
-
-            gender: [{
-                gender: "male",
-                isChecked: false,
-            },{
-                gender: "female",
-                isChecked: true,
-            }],
-            date: 122001
+            name: "Raja",
+            date: 1725895,
+            gender: 'male', // 0,1,2
+            department: "Software", // IT, Software, Mech
+            designation: "Developer" // Manager, developer, 
         },
-        {
-            title: "title 2",
-            selectValue: ["Title-2", "Heading-2"],
-            status: [{
-                status: true,
-                isSelected: true
-            }, {
-                status: false,
-                isSelected: false
-            }],
-
-            gender: [{
-                gender: "male",
-                isChecked: true,
-            }, {
-                gender: "female",
-                isChecked: false,
-            }],
-            date: 123002
-        },
-        {
-            title: "title 3",
-            selectValue: ["Title-3", "Heading-3"],
-            status: [{
-                status: true,
-                isSelected: false
-            }, {
-                status: false,
-                isSelected: true
-            }],
-
-            gender: [{
-                gender: "male",
-                isChecked: false,
-            }, {
-                gender: "female",
-                isChecked: true,
-            }],
-            date: 125001
-        },
-        {
-            title: "title 4",
-            selectValue: ["Title-4", "Heading-4"],
-            status: [{
-                status: true,
-                isSelected: true
-            }, {
-                status: false,
-                isSelected: false
-            }],
-
-            gender: [{
-                gender: "male",
-                isChecked: true,
-            }, {
-                gender: "female",
-                isChecked: false,
-            }],
-            date: 112001
-        }
-
+        // {
+        //     name: "Praveen",
+        //     date: 1725895215663,
+        //     gender: 'male', // 0,1,2
+        //     department: "Software", // IT, Software, Mech
+        //     designation: "Developer" // Manager, developer, 
+        // },
+        // {
+        //     name: "Ajin",
+        //     date: 1725895215663,
+        //     gender: 'male', // 0,1,2
+        //     department: "Software", // IT, Software, Mech
+        //     designation: "Developer" // Manager, developer, 
+        // }
     ])
 
 deploy.tableStructure()
