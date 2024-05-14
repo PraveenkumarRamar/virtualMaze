@@ -63,14 +63,17 @@ let tables = new Screen1([
     }
 ], [
     {
+        id: "1",
         title: "title 1",
         description: "Direct-message",
     },
     {
+        id: "2",
         title: "title 2",
         description: "Legacy",
     },
     {
+        id: "3",
         title: "title 3",
         description: "Direct-message",
     }
@@ -122,24 +125,28 @@ let tables2 = new Screen2([
 ],
 [
     {
+        id: "1",
         title: "title 1",
         description: "Direct",
         reason: "nothing",
         date: 122001
     },
     {
+        id: "2",
         title: "title 2",
         description: "Legacy",
         reason: "no reason",
         date: 123002
     },
     {
+        id: "3",
         title: "title 3",
         description: "Direct",
         reason: "only reason",
         date: 125001
     },
     {
+        id: "3",
         title: "title 3",
         description: "Direct",
         reason: "yes yes",

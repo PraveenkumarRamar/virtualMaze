@@ -1,19 +1,3 @@
-
-// let screen1 = document.createElement("button");
-// screen1.innerText = "Screen1"
-// screen1.addEventListener("click", () => {
-//     test.tableStructure();
-// })
-
-// let screen2 = document.createElement("button");
-// screen2.innerText = "Screen2"
-// screen2.addEventListener("click", () => {
-//     deploy.tableStructure();
-// })
-
-
-// document.body.append(screen1, screen2);
-
 class Table {
     constructor(
         data = [],
@@ -137,7 +121,76 @@ class Table {
                 td.setAttribute("class", `data${index}`);
 
                 if (item.keyId !== "action") {
-                    td.innerText = data[item.keyId] !== undefined ? data[item.keyId] : "-";
+                    // td.innerText = data[item.keyId] !== undefined ? data[item.keyId] : "-";
+                    if (data[item.keyId] !== undefined) {
+                        if (item.type == "checkbox") {
+                            // console.log(data[item.keyId]);
+                            let len = data[item.keyId].length;
+                            for (let i = 0; i < len; i++) {
+                                // if()
+                                // console.log(data[item.keyId][i]);
+                                let input = document.createElement("input");
+                                input.setAttribute("type", item.type);
+                                input.classList.add(`input_select_data${index}`)
+                                input.setAttribute("name", data[item.keyId][i].status);
+                                input.setAttribute("value", data[item.keyId][i].status);
+                                input.checked = data[item.keyId][i].isSelected ? true : false;
+                                // input.style.display = data[item.keyId][i].isSelected ? "inline" : "none"
+                                td.appendChild(input);
+                                let label = document.createElement("label");
+                                label.innerText = data[item.keyId][i].status;
+                                // label.style.display = data[item.keyId][i].isSelected ? "inline" : "none"
+                                td.appendChild(label);
+                            }
+
+
+                            // td.innerHTML = `  
+                            // <input type="${item.type}" ${data.isChecked ? "checked" : ""} class="text_data${index}" id="text-input-data${index}" name="${data[item.keyId]}"  value="${data[item.keyId]}">
+                            // <label for="text-input-data${index}">${data[item.keyId]}</label>`
+                        } 
+                        
+                        else if (item.type == "radio") {
+                            let len = data[item.keyId].length;
+                            for (let i = 0; i < len; i++) {
+                                // if()
+                                // console.log(data[item.keyId][i]);
+                                let input = document.createElement("input");
+                                input.setAttribute("type", item.type);
+                                input.classList.add(`input_radio_data${index}`)
+                                input.setAttribute("name", `data${index}`);
+                                input.setAttribute("value", data[item.keyId][i].gender);
+                                input.checked = data[item.keyId][i].isChecked ? true : false;
+                                // console.log(data[item.keyId][i].isChecked);
+                                // input.style.display = data[item.keyId].isChecked ? "inline" : "none"
+                                td.appendChild(input);
+                                let label = document.createElement("label");
+                                label.innerText = data[item.keyId][i].gender;
+                                // label.style.display = data[item.keyId][i].isChecked ? "inline" : "none"
+                                td.appendChild(label);
+                            }
+                        } else if (item.type == "select") {
+
+                            let selectElement = document.createElement("select");
+                            selectElement.setAttribute("name", "table");
+                            selectElement.classList.add(`select_data${index}`)
+                            selectElement.setAttribute("id", "table-select-element");
+                            td.appendChild(selectElement)
+
+                            let len = data.selectValue.length
+                            // console.log(len);
+                            for (let i = 0; i < len; i++) {
+                                let option = document.createElement("option");
+                                option.setAttribute("value", data.selectValue[i]);
+                                option.innerText = data.selectValue[i]
+                                selectElement.appendChild(option);
+                            }
+                        }
+                        else {
+                            td.innerHTML = data[item.keyId]
+                        }
+                    } else {
+                        td.innerHTML = '-'
+                    }
                     tr.append(td);
                 } else {
                     let buttonsCell = document.createElement("td");
@@ -194,11 +247,12 @@ class Table {
         // // }
 
 
-        let addRowBtn = document.getElementById(`row${id}`)
-        console.log(addRowBtn);
+        // let addRowBtn = document.getElementById(`row${id}`)
+        // console.log(addRowBtn);
 
         // addRowBtn.style.display = "block"
         let inputElements = document.querySelectorAll(`.text_data${id}`);
+        console.log(inputElements);
         let newData = {};
 
         // console.log(inputElements, 'inputElements');
@@ -207,6 +261,7 @@ class Table {
             let keyId = this.data[index].keyId;
             // console.log(keyId, 'keyy');
             newData[keyId] = input.value;
+            console.log(input.value);
         });
 
         this.fetching_data.push(newData);
@@ -299,20 +354,20 @@ class Table {
     }
 
     editData(id) {
-        // console.log(`Data edited successfully in  ${id}`);
-        let data = document.querySelectorAll(`.data${id}`)
-        console.log(data.length);
 
-        // let fContainer = this.formContainer || this.formData()
-        // let form = fContainer.querySelector('.form-container')
-        // // console.log(form);
-        // form.innerHTML = ''
-        // fContainer.style.display = "block";
-        // this.formContainer = fContainer
+        let data = document.querySelector(`#row${id}`)
+        let td_cells = data.querySelectorAll(`.data${id}`)
+        // console.log(td_cells);
 
-        for (let i = 0; i < data.length; i++) {
-            data[i].innerHTML = `<input type='text' id='text_data${id}' value='${data[i].innerHTML}'/>`
+        for (let i = 0; i < td_cells.length; i++) {
+
+
         }
+
+
+        // for (let i = 0; i < data.length; i++) {
+        //     data[i].innerHTML = `<input type='text' id='text_data${id}' value='${data[i].innerHTML}'/>`
+        // }
 
         let editBtn = document.querySelector(`#Edit_${id}`)
         editBtn.style.display = "none"
@@ -323,17 +378,6 @@ class Table {
         saveBtn.style.display = "inline"
 
 
-
-
-        // for (let datas of data) {
-        //     // console.log(typeof datas.innerHTML);
-        //     let inputs = datas.innerHTML
-        //     form.innerHTML += `<input type='text' id='text_data${id}' value='${inputs}'/><br><br>`;
-        //     // inputs.setAttribute("type" , "text")
-        // }
-        // let ele = document.getElementById("app")
-        // ele.append(fContainer)
-        // document.body.appendChild(fContainer)
     }
 
     deleteData(id) {
@@ -399,20 +443,24 @@ let deploy = new Table([
     {
         keyId: "title",
         label: "Title",
+        type: "select",
         // formate() {
 
         // }
     },
     {
-        keyId: "description",
-        label: "Description",
+        keyId: "status",
+        label: "Status",
+        type: "checkbox",
         // formate() {
 
         // }
     }
     , {
-        keyId: "reason",
-        label: "Reason",
+        keyId: "gender",
+        label: "Gender",
+        type: "radio",
+
         // action: ["Edit", "Delete", "Save"]
 
         // formate() {
@@ -421,6 +469,7 @@ let deploy = new Table([
     }, {
         keyId: "date",
         label: "Date",
+        type: "number"
         // action: ["Edit", "Delete", "Save"]
         // formate() {
 
@@ -439,86 +488,87 @@ let deploy = new Table([
 ],
     [
         {
-            id: "1",
             title: "title 1",
-            description: "Direct",
-            reason: "nothing",
+            selectValue: ["Title-1", "Heading-1"],
+            status: [{
+                status: true,
+                isSelected: false
+            }, {
+                status: false,
+                isSelected: true
+            }],
+
+            gender: [{
+                gender: "male",
+                isChecked: false,
+            },{
+                gender: "female",
+                isChecked: true,
+            }],
             date: 122001
         },
         {
-            id: "2",
             title: "title 2",
-            description: "Legacy",
-            reason: "no reason",
+            selectValue: ["Title-2", "Heading-2"],
+            status: [{
+                status: true,
+                isSelected: true
+            }, {
+                status: false,
+                isSelected: false
+            }],
+
+            gender: [{
+                gender: "male",
+                isChecked: true,
+            }, {
+                gender: "female",
+                isChecked: false,
+            }],
             date: 123002
         },
         {
-            id: "3",
             title: "title 3",
-            description: "Direct",
-            reason: "only reason",
+            selectValue: ["Title-3", "Heading-3"],
+            status: [{
+                status: true,
+                isSelected: false
+            }, {
+                status: false,
+                isSelected: true
+            }],
+
+            gender: [{
+                gender: "male",
+                isChecked: false,
+            }, {
+                gender: "female",
+                isChecked: true,
+            }],
             date: 125001
         },
         {
-            id: "3",
-            title: "title 3",
-            description: "Direct",
-            reason: "yes yes",
+            title: "title 4",
+            selectValue: ["Title-4", "Heading-4"],
+            status: [{
+                status: true,
+                isSelected: true
+            }, {
+                status: false,
+                isSelected: false
+            }],
+
+            gender: [{
+                gender: "male",
+                isChecked: true,
+            }, {
+                gender: "female",
+                isChecked: false,
+            }],
             date: 112001
         }
 
     ])
 
-// deploy.getData()
-// deploy.tableStructure();
-
-
-// class Table2 extends Table {
-//     constructor(data = [], fetching_data = []) {
-//         super(data, fetching_data)
-//     }
-// }
-
-
-// let test = new Table([
-//     {
-//         keyId: "title",
-//         label: "Title",
-//         // formate() {
-
-//         // }
-//     },
-//     {
-//         keyId: "description",
-//         label: "Description",
-//         // formate() {
-
-//         // }
-//     },
-//     {
-//         keyId: "action",
-//         label: "Action",
-//         action: ["Edit", "Delete", "Save"]
-
-//         // formate() {
-
-//         // }
-//     }
-// ], [
-//     {
-//         id: "1",
-//         title: "title 1",
-//         description: "Direct-message",
-//     },
-//     {
-//         id: "2",
-//         title: "title 2",
-//         description: "Legacy",
-//     },
-//     {
-//         id: "3",
-//         title: "title 3",
-//         description: "Direct-message",
-//     }
-// ])
+deploy.tableStructure()
 export default Table

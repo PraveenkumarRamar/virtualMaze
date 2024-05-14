@@ -248,7 +248,70 @@ var Table = /*#__PURE__*/function () {
           td.style.textAlign = "center";
           td.setAttribute("class", "data".concat(index));
           if (item.keyId !== "action") {
-            td.innerText = data[item.keyId] !== undefined ? data[item.keyId] : "-";
+            // td.innerText = data[item.keyId] !== undefined ? data[item.keyId] : "-";
+            if (data[item.keyId] !== undefined) {
+              if (item.type == "checkbox") {
+                // console.log(data[item.keyId]);
+                var len = data[item.keyId].length;
+                for (var i = 0; i < len; i++) {
+                  // if()
+                  // console.log(data[item.keyId][i]);
+                  var input = document.createElement("input");
+                  input.setAttribute("type", item.type);
+                  input.classList.add("input_select_data".concat(index));
+                  input.setAttribute("name", data[item.keyId][i].status);
+                  input.setAttribute("value", data[item.keyId][i].status);
+                  input.checked = data[item.keyId][i].isSelected ? true : false;
+                  // input.style.display = data[item.keyId][i].isSelected ? "inline" : "none"
+                  td.appendChild(input);
+                  var label = document.createElement("label");
+                  label.innerText = data[item.keyId][i].status;
+                  // label.style.display = data[item.keyId][i].isSelected ? "inline" : "none"
+                  td.appendChild(label);
+                }
+
+                // td.innerHTML = `  
+                // <input type="${item.type}" ${data.isChecked ? "checked" : ""} class="text_data${index}" id="text-input-data${index}" name="${data[item.keyId]}"  value="${data[item.keyId]}">
+                // <label for="text-input-data${index}">${data[item.keyId]}</label>`
+              } else if (item.type == "radio") {
+                var _len = data[item.keyId].length;
+                for (var _i = 0; _i < _len; _i++) {
+                  // if()
+                  // console.log(data[item.keyId][i]);
+                  var _input = document.createElement("input");
+                  _input.setAttribute("type", item.type);
+                  _input.classList.add("input_radio_data".concat(index));
+                  _input.setAttribute("name", "data".concat(index));
+                  _input.setAttribute("value", data[item.keyId][_i].gender);
+                  _input.checked = data[item.keyId][_i].isChecked ? true : false;
+                  // console.log(data[item.keyId][i].isChecked);
+                  // input.style.display = data[item.keyId].isChecked ? "inline" : "none"
+                  td.appendChild(_input);
+                  var _label = document.createElement("label");
+                  _label.innerText = data[item.keyId][_i].gender;
+                  // label.style.display = data[item.keyId][i].isChecked ? "inline" : "none"
+                  td.appendChild(_label);
+                }
+              } else if (item.type == "select") {
+                var selectElement = document.createElement("select");
+                selectElement.setAttribute("name", "table");
+                selectElement.classList.add("select_data".concat(index));
+                selectElement.setAttribute("id", "table-select-element");
+                td.appendChild(selectElement);
+                var _len2 = data.selectValue.length;
+                // console.log(len);
+                for (var _i2 = 0; _i2 < _len2; _i2++) {
+                  var option = document.createElement("option");
+                  option.setAttribute("value", data.selectValue[_i2]);
+                  option.innerText = data.selectValue[_i2];
+                  selectElement.appendChild(option);
+                }
+              } else {
+                td.innerHTML = data[item.keyId];
+              }
+            } else {
+              td.innerHTML = '-';
+            }
             tr.append(td);
           } else {
             var buttonsCell = document.createElement("td");
@@ -298,11 +361,12 @@ var Table = /*#__PURE__*/function () {
       // //     console.log(d.innerHTML);
       // // }
 
-      var addRowBtn = document.getElementById("row".concat(id));
-      console.log(addRowBtn);
+      // let addRowBtn = document.getElementById(`row${id}`)
+      // console.log(addRowBtn);
 
       // addRowBtn.style.display = "block"
       var inputElements = document.querySelectorAll(".text_data".concat(id));
+      console.log(inputElements);
       var newData = {};
 
       // console.log(inputElements, 'inputElements');
@@ -311,6 +375,7 @@ var Table = /*#__PURE__*/function () {
         var keyId = _this2.data[index].keyId;
         // console.log(keyId, 'keyy');
         newData[keyId] = input.value;
+        console.log(input.value);
       });
       this.fetching_data.push(newData);
       this.tableStructure();
@@ -407,20 +472,16 @@ var Table = /*#__PURE__*/function () {
   }, {
     key: "editData",
     value: function editData(id) {
-      // console.log(`Data edited successfully in  ${id}`);
-      var data = document.querySelectorAll(".data".concat(id));
-      console.log(data.length);
+      var data = document.querySelector("#row".concat(id));
+      var td_cells = data.querySelectorAll(".data".concat(id));
+      // console.log(td_cells);
 
-      // let fContainer = this.formContainer || this.formData()
-      // let form = fContainer.querySelector('.form-container')
-      // // console.log(form);
-      // form.innerHTML = ''
-      // fContainer.style.display = "block";
-      // this.formContainer = fContainer
+      for (var i = 0; i < td_cells.length; i++) {}
 
-      for (var i = 0; i < data.length; i++) {
-        data[i].innerHTML = "<input type='text' id='text_data".concat(id, "' value='").concat(data[i].innerHTML, "'/>");
-      }
+      // for (let i = 0; i < data.length; i++) {
+      //     data[i].innerHTML = `<input type='text' id='text_data${id}' value='${data[i].innerHTML}'/>`
+      // }
+
       var editBtn = document.querySelector("#Edit_".concat(id));
       editBtn.style.display = "none";
 
@@ -428,16 +489,6 @@ var Table = /*#__PURE__*/function () {
 
       var saveBtn = document.querySelector("#Save_".concat(id));
       saveBtn.style.display = "inline";
-
-      // for (let datas of data) {
-      //     // console.log(typeof datas.innerHTML);
-      //     let inputs = datas.innerHTML
-      //     form.innerHTML += `<input type='text' id='text_data${id}' value='${inputs}'/><br><br>`;
-      //     // inputs.setAttribute("type" , "text")
-      // }
-      // let ele = document.getElementById("app")
-      // ele.append(fContainer)
-      // document.body.appendChild(fContainer)
     }
   }, {
     key: "deleteData",
@@ -498,22 +549,22 @@ var Table = /*#__PURE__*/function () {
 var deploy = new Table([{
   keyId: "title",
   label: "Title",
-  type: "text"
+  type: "select"
   // formate() {
 
   // }
 }, {
-  keyId: "description",
-  label: "Description",
+  keyId: "status",
+  label: "Status",
   type: "checkbox"
-
   // formate() {
 
   // }
 }, {
-  keyId: "reason",
-  label: "Reason",
+  keyId: "gender",
+  label: "Gender",
   type: "radio"
+
   // action: ["Edit", "Delete", "Save"]
 
   // formate() {
@@ -537,165 +588,80 @@ var deploy = new Table([{
   // }
 }], [{
   title: "title 1",
-  description: "Direct",
-  reason: "nothing",
+  selectValue: ["Title-1", "Heading-1"],
+  status: [{
+    status: true,
+    isSelected: false
+  }, {
+    status: false,
+    isSelected: true
+  }],
+  gender: [{
+    gender: "male",
+    isChecked: false
+  }, {
+    gender: "female",
+    isChecked: true
+  }],
   date: 122001
 }, {
   title: "title 2",
-  description: "Legacy",
-  reason: "no reason",
+  selectValue: ["Title-2", "Heading-2"],
+  status: [{
+    status: true,
+    isSelected: true
+  }, {
+    status: false,
+    isSelected: false
+  }],
+  gender: [{
+    gender: "male",
+    isChecked: true
+  }, {
+    gender: "female",
+    isChecked: false
+  }],
   date: 123002
 }, {
   title: "title 3",
-  description: "Direct",
-  reason: "only reason",
+  selectValue: ["Title-3", "Heading-3"],
+  status: [{
+    status: true,
+    isSelected: false
+  }, {
+    status: false,
+    isSelected: true
+  }],
+  gender: [{
+    gender: "male",
+    isChecked: false
+  }, {
+    gender: "female",
+    isChecked: true
+  }],
   date: 125001
 }, {
-  title: "title 3",
-  description: "Direct",
-  reason: "yes yes",
+  title: "title 4",
+  selectValue: ["Title-4", "Heading-4"],
+  status: [{
+    status: true,
+    isSelected: true
+  }, {
+    status: false,
+    isSelected: false
+  }],
+  gender: [{
+    gender: "male",
+    isChecked: true
+  }, {
+    gender: "female",
+    isChecked: false
+  }],
   date: 112001
 }]);
 deploy.tableStructure();
 var _default = exports.default = Table;
-},{}],"workout.js":[function(require,module,exports) {
-"use strict";
-
-var _script = _interopRequireDefault(require("./script"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var Screen1_button = document.createElement("button");
-Screen1_button.setAttribute('id', 'screen1');
-Screen1_button.innerText = "Screen1";
-Screen1_button.addEventListener("click", function () {
-  tables.makeTable();
-});
-var Screen2_button = document.createElement("button");
-Screen2_button.setAttribute('id', 'screen2');
-Screen2_button.innerText = "Screen2";
-Screen2_button.addEventListener("click", function () {
-  tables2.makeTable();
-});
-document.body.append(Screen1_button, Screen2_button);
-var Screen1 = /*#__PURE__*/function () {
-  function Screen1(data, fetching_data) {
-    _classCallCheck(this, Screen1);
-    this.table1 = new _script.default(data, fetching_data);
-  }
-  return _createClass(Screen1, [{
-    key: "makeTable",
-    value: function makeTable() {
-      this.table1.tableStructure();
-      // console.log("make table is working");
-    }
-  }]);
-}();
-var Screen2 = /*#__PURE__*/function () {
-  function Screen2(data, fetching_data) {
-    _classCallCheck(this, Screen2);
-    this.table2 = new _script.default(data, fetching_data);
-  }
-  return _createClass(Screen2, [{
-    key: "makeTable",
-    value: function makeTable() {
-      this.table2.tableStructure();
-      // console.log("make table is working");
-    }
-  }]);
-}();
-var tables = new Screen1([{
-  keyId: "title",
-  label: "Title"
-}, {
-  keyId: "description",
-  label: "Description"
-}, {
-  keyId: "action",
-  label: "Action",
-  action: ["Edit", "Delete", "Save"]
-}], [{
-  id: "1",
-  title: "title 1",
-  description: "Direct-message"
-}, {
-  id: "2",
-  title: "title 2",
-  description: "Legacy"
-}, {
-  id: "3",
-  title: "title 3",
-  description: "Direct-message"
-}]);
-var tables2 = new Screen2([{
-  keyId: "title",
-  label: "Title"
-  // formate() {
-
-  // }
-}, {
-  keyId: "description",
-  label: "Description"
-  // formate() {
-
-  // }
-}, {
-  keyId: "reason",
-  label: "Reason"
-  // action: ["Edit", "Delete", "Save"]
-
-  // formate() {
-
-  // }
-}, {
-  keyId: "date",
-  label: "Date"
-  // action: ["Edit", "Delete", "Save"]
-  // formate() {
-
-  // }
-}, {
-  keyId: "action",
-  label: "Action",
-  action: ["Edit", "Delete", "Save"]
-
-  // formate() {
-
-  // }
-}], [{
-  id: "1",
-  title: "title 1",
-  description: "Direct",
-  reason: "nothing",
-  date: 122001
-}, {
-  id: "2",
-  title: "title 2",
-  description: "Legacy",
-  reason: "no reason",
-  date: 123002
-}, {
-  id: "3",
-  title: "title 3",
-  description: "Direct",
-  reason: "only reason",
-  date: 125001
-}, {
-  id: "3",
-  title: "title 3",
-  description: "Direct",
-  reason: "yes yes",
-  date: 112001
-}]);
-
-// })
-
-// document.body.append(screen1);
-},{"./script":"script.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -720,7 +686,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59606" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53550" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
@@ -864,5 +830,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","workout.js"], null)
-//# sourceMappingURL=/workout.1ee1f8f4.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","script.js"], null)
+//# sourceMappingURL=/script.75da7f30.js.map
